@@ -24,30 +24,32 @@ Program to implement the SVM For Spam Mail Detection..
 Developed by:piyush kumar 
 RegisterNumber:212223220075  
 */
-import numpy as np
+import chardet
+file='/Content/spam.csv'
+with open(file, 'rb') as rawdata:
+    result=chardet.detect(rawdata.read(100000))
+result
 import pandas as pd
+data=pd.read_csv("C:/Users/admin/Downloads/spam.csv")
+data.head()
+data.info()
+data.isnull().sum()
+x=data["v1"].values
+y=data['v2'].values
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer 
-from sklearn import svm
-from sklearn.metrics import classification_report, accuracy_score
-
-df = pd.read_csv('spam.csv', encoding='ISO-8859-1')
-df.head()
-
-vectorizer = CountVectorizer()
-X = vectorizer.fit_transform(df['v2'])
-y = df['v1']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
-
-model = svm.SVC (kernel='linear') 
-model.fit(X_train, y_train)
-
-predictions = model.predict(X_test)
-print("Accuracy: ", accuracy_score (y_test, predictions)) 
-print("Classification Report: ")
-print(classification_report (y_test, predictions))
-
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=0)
+from sklearn.feature_extraction.text import CountVectorizer
+cv=CountVectorizer()
+x_train=cv.fit_transform(x_train)
+x_test=cv.transform(x_test)
+from sklearn.svm import SVC
+svc=SVC()
+svc.fit(x_train,y_train)
+y_pred=svc.predict(x_test)
+y_pred
+from sklearn import metrics
+accuracy=metrics.accuracy_score(y_test,y_pred)
+accuracy
 ```
 
 ## Output:
